@@ -1,0 +1,218 @@
+Routing in a React App
+
+-> Install a third party package.
+-> routes.js file to configure the routes
+-> For each route, create a component file, export the component, import it in routes.js and configure the new route with a path party.
+
+Routing in a Next.js App - but inspite of writing a code to implement routing feature ,next.js adopted
+
+-> File-system based routing mechanism.
+-> When a file is added to the pages folder in a project, it automatically becomes available as a route.
+-> By mixing and matching file names with a nested folder structure, it is possible to pretty much define the most common routing patterns.
+
+to provide client side navigation next js provides with the link component.
+
+Routing Summary
+1) Page based routing mechanism - Pages are associated with a route based on their file name.
+2) Nested Routes - Nested folder structure, files will be automatically routed in the same way in the URL.
+3) Dynamic Routes - can be created by adding square brackets to a page name
+4) Catch all routes - Add three dots inside square brackets to create a catch all route. Helpful when you want different URLs for the same page layout or even when you are working with pages where some of the route parameters are optional.
+5) userouter hook's router.push method to navigate programatically.
+
+Pre Rendering - Pre render just means render in advance of sending it to the browser
+we have to fetch external data
+Types of pre-rendering
+1.Static Generation - wihtout data, with data, Incremental Static Generation (Special Case of Static Generation), dynamic parameter when fetching data.
+2.Server Side Rendering - data fetching
+Client-side data fetching
+
+Combining pre-rendering with client-side data fetching.
+
+If we run a react app and compare inspect and view page source elements inside <div root>, elements are missing in view page source.
+If we run a next app and compare inspect and view page source elements inside <div __next>, elements are exact same in view page source.
+Reason behind this is Pre-rendering is done by default in a Next JS app.
+
+By default, Next JS pre-renders every page in the application. That means Next Js generates HTML for each page in advance instead of having it all done by client side Javascript.
+
+No-Prerendering (Plain React.js app)
+But In a react app, javascript is loaded which then executes to mount the HTML elements on to the DOM. When the page is served, we just have a div tag with id = root, once the javascript for the page is loaded, it will execute in the browser, create the different DOM Nodes and mount them on to the root element. This process is called hydration.
+After hydaration, react components are initialized and App becomes interactive.
+
+Pre-rendering (Using Next.js app)
+In Next JS pages are pre-rendered or in simpler words HTML is already generated with the necessary data and then sent to the browser, javascript would then load and make the page interactive but the HTML is there to begin with.
+If our app contains interactive components like <Link/>, they will be active after JS loads.
+
+Advantages of Pre-rendering
+1) Pre-rendering improves performance
+   In a react app, you need to wait for the javascript to be executed, it would then perhaps fetch data from an external API and then render the UI.
+   So there is a wait time for user who can to a certain extent be pacified by showing a loading indicator.
+   With a pre-rendered page, the HTML is already generated and loads faster.
+2) Pre-rendering helps with SEO
+   If you are buildingg a blog or an e-commerce site, it is very important that SEO can index your content
+   With a React App, if the search engine hits your page, it only sees a div tag with id equal to root
+   But if search engine hits pre-rendered page though, all the content is present in the source code which will help index that page leading to better search rankings.
+   
+   Pre rendering refers to the process of generating HTML in advance with necessary data for a page in our application.
+   Pre rendering can result in better performance and SEO.
+   
+   Next JS supports two forms of pre rendering
+   1) Static Generation
+   2) Server Side Rendering
+   
+   Static Generation - HTML is generated at build time and is reused for each request.
+   build time - creating new version of something
+   A method of pre-rendering where the HTML pages are generated at build time.
+   The HTML with all the data that makes up the content of the web page are generated in advance when you build your application.
+   This is a recommeded method to pre-render pages whenever possible.
+   Page can be build once, cached by CDN and served to the client almost instantly.
+   
+   A CDN (content delivery network), also called a content distribution network, is a group of geographically distributed and interconnected servers. They provide cached internet content from a network location closest to a user to speed up its delivery.
+   
+   Example - Blog Pages, e commerce Product Pages, documentation and marketing pages
+   
+   
+   
+   
+   How do we tell next to perform static generation??
+   
+   NextJS by default will pre-render every page in our app.
+   The HTML for every page will automatically be statically generated when we build our application.
+   
+   Prod Server - An optimized build is created once and you deploy that build. You dont make code changes on the go once it is deployed.
+   Dev Server - We should be able to make changes in our code and we want that code to immediately reflect in the browser.
+   
+   For production builds, a page will be pre-rendered once when we run the build command.
+   In development mode, the page is pre-rendered for every request you make.
+   
+   Next JS without any configuration statically generates ever page in our app when we build it for production. This allows the page to be cached by CDN and indexed by a search engine.
+   
+   Static generation without data - for pages that can be generated without fetching external data at build time.
+   Next JS builds the app for production and the HTML is generated -- no need to fetch external data.
+   
+   Static generation with data - for pages that can only be generated after fetching external data at build time.
+   Next JS builds the app for production and the HTML is only generated after fetching external data.
+   
+   getstatic props - used to inject props to our component and props contains the fetched data.
+   
+   -> get static props runs only on server side. This is the reason when we console.log the data we see that in terminal as opposed to the browser console.
+   The function will never run client side.
+   The code you write inside getstatic props wont be included in the JS bundle that is sent to the browser.
+   
+   -> you can write server-side code directly in getstatic props.
+   So code you will typically see in Node js like accessing the file system using the fs module or quering a database can be done inside getStaticProps.
+   You also dont have to worry about including API Keys in getstaticProps as that wont make it to the browser.
+   
+   -> getstatic props is allowed only in a page and cannot be run from a regular component file.
+   It is only used for pre-rendering and not client side data fetching.
+   
+   ->get static props should return an object and object should contain a props key which is an object.
+   
+   ->get static props will run at build time.
+   when we run yarn dev in terminal, get static props runs on every request.
+   
+   .next folder is generated when we run dev script in terminal.
+   
+   In terminal 
+   the output displays information about each route in our application.
+   We have 3 columns
+   Page - refers to the route
+   Size - size of the assets downloaded when navigating to the corresponding page client side.
+   First Load JS - refers to size of assets downloaded from the server in visiting the page
+   FIrst Load JS shared by all - this refers to the code that is downloaded irrespective of the route you are hitting in the browser. contains css from global.css, some webpack runtime code,framework code, node modules render code like react and some code related to components and pages in our application.
+   
+   Link Pre-fetching
+   
+   Any <Link/> component in the viewport (initially or through scroll) will be prefetched by default (including the corresponding data) for pages using Static Generation.
+   
+   when a page with getStaticProps is pre-rendered at build time, in addition to the page HTML file, Next.js generates a JSON file holding the result of running getStaticProps.
+   
+   The JSON file will be used in the client-side routing throuh next/link or next/router
+   
+   When you navigate to a page thats pre rendered using getStaticProps, Next.js fetches the JSON file(pre-computed at build time) and uses it as the props to create the page component client-side.
+   
+   Client-side page transitions will not call getstaticprops as only the exported JSON is used.
+   
+   
+   Static generation - methof of pre-rendering where the HTML pages are generated at build time.
+   It can be done with and without external data.
+   To use external data, getstaticprops function has to be generated from the page.
+   HTML, javascript and JSON file containing external data are generated.
+   If you navigate directly to the page route, the HTML file is served.
+   If you navigate to the page route from a different route, the page is created client side using the Javascript and JSON prefetched from the server, there is no additional request to the server.
+   
+   getstaticPath function is used to inform next js of the different values to support when statically generating a dynamic page.
+   
+   fallback - It accepts 3 values
+   fallback : false
+   fallback : true
+   fallback : 'blocking'
+   when it comes to performance and user experience, understanding behaviour of static generation for each of these values is really important.
+   
+   getstaticPaths fallback : false
+   1) The paths returned from getStaticPaths will be rendered to HTML at build time by getStaticProps.
+   2) If fallback is set to false, then any paths not returned by getStaticPaths will result in 404 page.
+   
+   When to use fallback : false
+   The false value is most suitable if you have an application with a small number of paths to pre-render.
+   When new pages are not added often.
+   A blog site with a few articles is a good example for fallback set to false.
+   
+   
+   getstaticPaths fallback : true
+   1) The paths returned from getStaticPaths will be rendered to HTML at build time by getStaticProps. 
+   2) The paths that have not been generated at build time will not result in a 404 page.
+   Instead, Next.js will serve a "fallback" version of the page on the first request to such a path.
+   3) In the background, Next.js will statically generate the requested path HTML and JSON. This includes running getStaticProps.
+   4) When that's done, the browser receives the JSON for the generated path. This will be used to automatically render the page with the required props. From the user's 
+   perspective, the page will be swapped from the fallback page to the full page.
+   5) At the same time, Next.js keeps track of the new list of pre-rendered pages. 
+   Subsequent requests to the same path will serve the generated page, just like other pages pre-rendered at build time.
+   
+    When to use fallback : true
+    The true value is most suitable if your app has a very large number of static pages that depend on data.
+    For eg - large ecommerce site.
+    you want all the products pages to be pre -rendered but if you have a thousand products, builds can take a really long time.
+    you may statically genearte a small subset of products that are popular and use fallback : true for rest.
+    when someone requests a page that's not generated yet, the user will see the page with loading indicator.
+    Shortly after, getStaticProps finishes and the page will be rendered with the requested data. From then onwards, everyone who requests the same page will get the statically pre-rendered page.
+    This ensures that users always have a fast experience while preserving fast builds and the benefits of Static Generation.
+    
+    getstaticPaths fallback : 'blocking'
+   1) The paths returned from getStaticPaths will be rendered to HTML at build time by getStaticProps. 
+   2) The paths that have not been generated at build time will not result in a 404 page. Instead on the first request, Next.js will render the page on the server and return the generated HTML.
+   3) when that's done, the browser receives the HTML for the generated path. From the user's perspective, it will transition from "the browser is requesting the page" to 
+   "the full page is loaded". There is no flash of loading/fallback state.
+   4) At the same time, Next.js keeps track of the new list of pre-rendered pages. Subsequent requests to the same path will serve the generated page, just like other pages pre-rendered at
+   build time.
+   
+   When to use fallback : 'blocking'
+   On a UX level, sometimes, people prefer the page to be loaded without a loading indicator if the wait time is a few mili seconds.This helps avoid the layout shift.
+   
+   Technical reason behind introducing blocking is - Some crawlers did not support javascript. The loading page would be rendered and then the full page would be loaded which was causing a problem.
+   
+   static generation with getStaticProps for data fetching and getStaticPath for dynamic pages seems like a really good approach to a wide variety of applications in production.
+   
+   Isuues with static generation: 
+   1) build time is proportional to the number of pages in the application.
+    The problem only gets worse with more products you add to the system as every new page increases the overall build time.
+   2) A page, once generated, can contain sale data till the time you rebuild the application.
+   
+   getstaticPaths only work with dynamic pages
+   
+   An e-commerce site typically will have 90% dynamic pages and 10% static pages. So we reduce the total build time by using getStaticPaths.
+   
+   If you render 1000 pages at build time, and then rest are generated based on incoming request, using fallback true or fallback 'blocking', changes in data will not update the already pre-rendered pages.
+   
+   
+   
+    
+    
+   
+   
+   
+   
+
+
+
+
+
